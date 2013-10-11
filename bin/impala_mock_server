@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require "impala_mock_server"
+
+if $0 == __FILE__
+  option = {}
+  option_parser = OptionParser.new do |opts|
+    opts.banner = "Usage: #{$0} [options]"
+
+    opts.on('--wq SECOND', Integer, 'Wait interval in "query"') do |t|
+      option[:wait_in_query] = t
+    end
+
+    opts.on('--ws SECOND', Integer, 'Wait interval in "get_state"') do |t|
+      option[:wait_in_get_state] = t
+    end
+
+    opts.on('--wf SECOND', Integer, 'Wait interval in "fetch"') do |t|
+      option[:wait_in_fetch] = t
+    end
+
+    opts.on_tail("-h", "--help", "Show this message") do
+      puts opts
+      exit
+    end
+  end
+  option_parser.parse!
+
+  is = ImpalaMockServer::Server.new(option)
+  is.run
+end
+
