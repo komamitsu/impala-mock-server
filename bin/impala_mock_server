@@ -7,6 +7,14 @@ if $0 == __FILE__
   option_parser = OptionParser.new do |opts|
     opts.banner = "Usage: #{$0} [options]"
 
+    opts.on('-r', '--result RESULT', 'Result of the query') do |r|
+      option[:result] = r
+    end
+
+    opts.on('-w', '--wr SECOND', Integer, 'Wait interval for the result') do |t|
+      option[:wait_for_result] = t
+    end
+
     opts.on('--wq SECOND', Integer, 'Wait interval in "query"') do |t|
       option[:wait_in_query] = t
     end

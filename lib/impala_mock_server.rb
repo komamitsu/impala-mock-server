@@ -8,18 +8,32 @@ module ImpalaMockServer
         @wait_in_query = opt[:wait_in_query]
         @wait_in_get_state = opt[:wait_in_get_state]
         @wait_in_fetch = opt[:wait_in_fetch]
+        @wait_for_result = opt[:wait_for_result]
+        @status = opt[:result] ? ::Impala::Protocol::Beeswax::QueryState::RUNNING : ::Impala::Protocol::Beeswax::QueryState::FINISHED
+        @result = ::Impala::Protocol::Beeswax::QueryState::FINISHED
+        if opt[:result]
+          @result = instance_eval("::Impala::Protocol::Beeswax::QueryState::#{opt[:result]}")
+        end
       end
 
       def query(args)
         puts "query: #{args}"
         sleep @wait_in_query if @wait_in_query
+
+        if @wait_for_result
+          @status_changer = Thread.new do
+            sleep @wait_for_result
+            @status = @result
+          end
+        end
+
         ::Impala::Protocol::Beeswax::QueryHandle.new
       end
 
       def get_state(args)
         puts "get_state: #{args}"
         sleep @wait_in_get_state if @wait_in_get_state
-        ::Impala::Protocol::Beeswax::QueryState::FINISHED
+        @status
       end
 
       def fetch(*args)
