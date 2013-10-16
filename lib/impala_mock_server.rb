@@ -17,7 +17,7 @@ module ImpalaMockServer
       end
 
       def query(args)
-        puts "query: #{args}"
+        puts "query: #{args.inspect}"
         sleep @wait_in_query if @wait_in_query
 
         if @wait_for_result
@@ -31,7 +31,7 @@ module ImpalaMockServer
       end
 
       def get_state(args)
-        puts "get_state: #{args}"
+        puts "get_state: #{args.inspect}"
         sleep @wait_in_get_state if @wait_in_get_state
         @status
       end
